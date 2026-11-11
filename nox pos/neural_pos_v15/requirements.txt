@@ -1,0 +1,32 @@
+# ── Core (required) ───────────────────────────────────────────────────────────
+fastapi
+uvicorn[standard]
+pyjwt
+bcrypt
+httpx
+python-multipart
+jinja2
+aiofiles
+python-dotenv
+
+# ── Optional: Receipt printer & cash drawer ───────────────────────────────────
+# Install separately: pip install python-escpos>=3.0 pyserial pyusb
+# Requires: sudo apt install libusb-1.0-0-dev
+# python-escpos>=3.0
+# pyserial
+# pyusb
+
+# ── Optional: Product images ──────────────────────────────────────────────────
+# pip install Pillow
+Pillow
+
+# ── Optional: Barcode labels & PDF ───────────────────────────────────────────
+# pip install python-barcode qrcode[pil] reportlab
+python-barcode
+qrcode[pil]
+reportlab
+
+# ── Optional: Price intelligence (web scraping) ───────────────────────────────
+# pip install beautifulsoup4 lxml
+beautifulsoup4
+lxml
