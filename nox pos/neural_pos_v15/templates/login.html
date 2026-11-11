@@ -1,688 +1,409 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Neural POS — Login</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --void: #030d06;
-    --deep: #051409;
-    --surface: #0f0f1a;
-    --panel: #141428;
-    --border: #1e1e3a;
-    --neural: #059669;
-    --neural-bright: #10b981;
-    --neural-glow: #34d399;
-    --neural-dim: #4c1d95;
-    --cream: #f5f0e8;
-    --cream-dim: #c9c3b8;
-    --cream-muted: #8a8478;
-    --accent: #d97706;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --mono: 'JetBrains Mono', monospace;
-    --sans: 'Space Grotesk', sans-serif;
-    --display: 'Bebas Neue', sans-serif;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Neural POS — Login</title>
+  <style>
+    :root {
+      --void: #050a0f;
+      --deep: #09141c;
+      --panel: #0f1c24;
+      --border: rgba(156, 163, 175, 0.18);
+      --neural: #00c896;
+      --neural-bright: #00e5b0;
+      --accent: #00b4d8;
+      --cream: #f5f0e8;
+      --cream-dim: #c4bdb1;
+      --cream-muted: #7a7468;
+      --danger: #ef4444;
+      --success: #10b981;
+    }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--void);
-    color: var(--cream);
-    font-family: var(--sans);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    position: relative;
-  }
-
-  /* Neural grid background */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(124,58,237,0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(124,58,237,0.06) 1px, transparent 1px);
-    background-size: 40px 40px;
-    animation: gridPulse 8s ease-in-out infinite;
-    pointer-events: none;
-  }
-
-  @keyframes gridPulse {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 0.8; }
-  }
-
-  /* Ambient glow orbs */
-  .orb {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(80px);
-    pointer-events: none;
-    animation: orbFloat 12s ease-in-out infinite;
-  }
-  .orb-1 {
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(124,58,237,0.18), transparent 70%);
-    top: -200px; left: -200px;
-    animation-delay: 0s;
-  }
-  .orb-2 {
-    width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(217,119,6,0.12), transparent 70%);
-    bottom: -100px; right: -100px;
-    animation-delay: -6s;
-  }
-  .orb-3 {
-    width: 300px; height: 300px;
-    background: radial-gradient(circle, rgba(157,94,255,0.1), transparent 70%);
-    top: 50%; right: 20%;
-    animation-delay: -3s;
-  }
-
-  @keyframes orbFloat {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(30px, -20px) scale(1.05); }
-    66% { transform: translate(-20px, 30px) scale(0.95); }
-  }
-
-  /* Login container */
-  .login-wrap {
-    position: relative;
-    z-index: 10;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    min-height: 100vh;
-    width: 100%;
-  }
-
-  /* Left panel — branding */
-  .brand-panel {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 80px 60px;
-    position: relative;
-    border-right: 1px solid var(--border);
-  }
-
-  .brand-panel::after {
-    content: '';
-    position: absolute;
-    right: 0; top: 0; bottom: 0;
-    width: 1px;
-    background: linear-gradient(180deg, transparent, var(--neural), transparent);
-    opacity: 0.6;
-  }
-
-  .logo-mark {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 60px;
-  }
-
-  .logo-icon {
-    width: 52px; height: 52px;
-    background: linear-gradient(135deg, var(--neural), var(--accent));
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    box-shadow: 0 0 30px rgba(5,150,105,0.4);
-    position: relative;
-  }
-
-  .logo-icon::before {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: 15px;
-    background: linear-gradient(135deg, var(--neural-glow), var(--accent));
-    z-index: -1;
-    opacity: 0.4;
-    filter: blur(6px);
-  }
-
-  .logo-text {
-    font-family: var(--display);
-    font-size: 32px;
-    letter-spacing: 3px;
-    color: var(--cream);
-    line-height: 1;
-  }
-
-  .logo-sub {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--neural-bright);
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    margin-top: 4px;
-  }
-
-  .brand-headline {
-    font-family: var(--display);
-    font-size: 72px;
-    line-height: 0.95;
-    letter-spacing: 1px;
-    color: var(--cream);
-    margin-bottom: 24px;
-  }
-
-  .brand-headline span {
-    color: var(--neural-bright);
-    display: block;
-  }
-
-  .brand-desc {
-    color: var(--cream-dim);
-    font-size: 15px;
-    line-height: 1.7;
-    max-width: 380px;
-    margin-bottom: 48px;
-  }
-
-  .feature-pills {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .pill {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: rgba(124,58,237,0.08);
-    border: 1px solid rgba(5,150,105,0.2);
-    border-radius: 10px;
-    font-size: 13px;
-    color: var(--cream-dim);
-    transition: all 0.3s;
-  }
-
-  .pill:hover {
-    background: rgba(5,150,105,0.15);
-    border-color: rgba(5,150,105,0.4);
-    color: var(--cream);
-  }
-
-  .pill-icon {
-    width: 28px; height: 28px;
-    background: linear-gradient(135deg, var(--neural-dim), var(--neural));
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    flex-shrink: 0;
-  }
-
-  /* Right panel — login form */
-  .form-panel {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 80px 60px;
-  }
-
-  .form-container {
-    width: 100%;
-    max-width: 420px;
-  }
-
-  .form-header {
-    margin-bottom: 40px;
-  }
-
-  .form-title {
-    font-family: var(--display);
-    font-size: 42px;
-    letter-spacing: 2px;
-    color: var(--cream);
-    margin-bottom: 8px;
-  }
-
-  .form-subtitle {
-    color: var(--cream-muted);
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-
-  .divider {
-    width: 60px;
-    height: 2px;
-    background: linear-gradient(90deg, var(--neural), var(--accent));
-    margin: 16px 0;
-    border-radius: 2px;
-  }
-
-  .form-group {
-    margin-bottom: 20px;
-  }
-
-  .form-label {
-    display: block;
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--neural-bright);
-    margin-bottom: 8px;
-  }
-
-  .form-input {
-    width: 100%;
-    padding: 14px 18px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--cream);
-    font-family: var(--mono);
-    font-size: 14px;
-    transition: all 0.3s;
-    outline: none;
-  }
-
-  .form-input:focus {
-    border-color: var(--neural);
-    background: rgba(124,58,237,0.08);
-    box-shadow: 0 0 0 3px rgba(5,150,105,0.15), inset 0 0 20px rgba(124,58,237,0.05);
-  }
-
-  .form-input::placeholder { color: var(--cream-muted); }
-
-  .input-wrap {
-    position: relative;
-  }
-
-  .input-icon {
-    position: absolute;
-    right: 14px; top: 50%;
-    transform: translateY(-50%);
-    color: var(--cream-muted);
-    font-size: 16px;
-    pointer-events: none;
-  }
-
-  .role-hint {
-    margin-top: 6px;
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--cream-muted);
-    display: flex;
-    gap: 12px;
-  }
-
-  .role-badge {
-    padding: 2px 8px;
-    background: rgba(5,150,105,0.15);
-    border: 1px solid rgba(5,150,105,0.3);
-    border-radius: 4px;
-    color: var(--neural-bright);
-  }
-
-  .btn-login {
-    width: 100%;
-    padding: 16px;
-    background: linear-gradient(135deg, var(--neural), var(--neural-bright));
-    border: none;
-    border-radius: 10px;
-    color: var(--cream);
-    font-family: var(--sans);
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
-    margin-top: 8px;
-  }
-
-  .btn-login::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, var(--neural-bright), var(--accent));
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .btn-login:hover::before { opacity: 1; }
-
-  .btn-login:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 30px rgba(5,150,105,0.4);
-  }
-
-  .btn-login:active { transform: translateY(0); }
-
-  .btn-text { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; gap: 8px; }
-
-  .error-msg {
-    display: none;
-    padding: 12px 16px;
-    background: rgba(239,68,68,0.1);
-    border: 1px solid rgba(239,68,68,0.3);
-    border-radius: 8px;
-    color: #fca5a5;
-    font-size: 13px;
-    margin-top: 16px;
-    font-family: var(--mono);
-  }
-
-  .loading {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  .spinner {
-    width: 16px; height: 16px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .demo-creds {
-    margin-top: 32px;
-    padding: 16px;
-    background: rgba(124,58,237,0.06);
-    border: 1px solid rgba(5,150,105,0.15);
-    border-radius: 10px;
-  }
-
-  .demo-title {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--neural-bright);
-    margin-bottom: 12px;
-  }
-
-  .demo-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 0;
-    border-bottom: 1px solid rgba(5,150,105,0.1);
-  }
-
-  .demo-row:last-child { border-bottom: none; }
-
-  .demo-role {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--neural-glow);
-    font-weight: 500;
-  }
-
-  .demo-cred {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--cream-dim);
-  }
-
-  .quick-login {
-    cursor: pointer;
-    padding: 2px 8px;
-    border-radius: 4px;
-    transition: background 0.2s;
-  }
-
-  .quick-login:hover {
-    background: rgba(5,150,105,0.2);
-    color: var(--cream);
-  }
-
-  /* Neural network animation in background */
-  .neural-net {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 1;
-    opacity: 0.3;
-  }
-
-  @media (max-width: 768px) {
-    .login-wrap { grid-template-columns: 1fr; }
-    .brand-panel { display: none; }
-    .form-panel {
-      padding: 32px 24px;
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--void);
+      color: var(--cream);
+      overflow-x: hidden;
+    }
+    body {
       min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at top left, rgba(0, 200, 150, 0.12), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(0, 180, 216, 0.12), transparent 30%),
+        var(--void);
+    }
+
+    .login-shell {
+      width: min(1100px, 100%);
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      background: rgba(11, 20, 31, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand-panel {
+      padding: clamp(28px, 4vw, 64px);
+      background: linear-gradient(135deg, rgba(6, 22, 17, 0.96), rgba(11, 20, 31, 0.96));
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
       justify-content: center;
     }
-    .form-inner { max-width: 100%; }
-    .form-title { font-size: 28px; }
-    .form-subtitle { font-size: 12px; }
-    .form-input { font-size: 16px !important; padding: 14px 16px 14px 44px; }
-    .btn-login { padding: 16px; font-size: 15px; }
-    .quick-fill { gap: 8px; }
-    .quick-login { padding: 10px 12px; }
-  }
 
-  @media (max-width: 400px) {
-    .form-panel { padding: 24px 16px; }
-    .form-title { font-size: 24px; }
-  }
-</style>
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 40px;
+    }
+    .brand-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--neural), var(--accent));
+      font-size: 26px;
+      box-shadow: 0 0 24px rgba(0, 200, 150, 0.35);
+    }
+    .brand-name {
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      font-size: clamp(22px, 2vw, 34px);
+      text-transform: uppercase;
+    }
+    .brand-sub {
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      color: var(--neural-bright);
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    h1 {
+      font-size: clamp(34px, 5vw, 72px);
+      line-height: 0.95;
+      letter-spacing: 0.04em;
+      margin: 0 0 18px;
+      text-transform: uppercase;
+    }
+    h1 span { color: var(--neural-bright); display: block; }
+
+    .brand-text {
+      max-width: 540px;
+      color: var(--cream-dim);
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    .feature-list {
+      display: grid;
+      gap: 12px;
+    }
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid rgba(0, 200, 150, 0.15);
+      border-radius: 12px;
+      background: rgba(0, 200, 150, 0.04);
+      color: var(--cream-dim);
+      font-size: 14px;
+    }
+    .feature-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: rgba(0, 200, 150, 0.12);
+      color: var(--neural-bright);
+      flex-shrink: 0;
+    }
+
+    .form-panel {
+      padding: clamp(28px, 5vw, 56px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10, 19, 25, 0.82);
+    }
+
+    .form-wrap {
+      width: min(100%, 420px);
+    }
+    .form-header {
+      margin-bottom: 28px;
+    }
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.27em;
+      text-transform: uppercase;
+      color: var(--neural-bright);
+      font-weight: 700;
+    }
+    .form-title {
+      margin: 12px 0 0;
+      font-size: clamp(30px, 4vw, 42px);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--neural-bright);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(15, 28, 36, 0.9);
+      color: var(--cream);
+      padding: 14px 16px;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    input:focus {
+      border-color: rgba(0, 200, 150, 0.7);
+      box-shadow: 0 0 0 3px rgba(0, 200, 150, 0.12);
+    }
+    input::placeholder { color: var(--cream-muted); }
+
+    .role-line {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      color: var(--cream-muted);
+      font-size: 11px;
+    }
+    .role-line span {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 200, 150, 0.2);
+      background: rgba(0, 200, 150, 0.08);
+      color: var(--neural-bright);
+    }
+
+    .primary-btn {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 15px 18px;
+      background: linear-gradient(135deg, var(--neural), var(--neural-bright));
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .primary-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(0, 200, 150, 0.28);
+    }
+    .primary-btn:disabled {
+      opacity: 0.7;
+      cursor: wait;
+    }
+
+    .status {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      background: rgba(239, 68, 68, 0.08);
+      color: #fca5a5;
+    }
+
+    .demo-box {
+      margin-top: 26px;
+      border: 1px solid rgba(0, 200, 150, 0.14);
+      border-radius: 14px;
+      background: rgba(0, 200, 150, 0.04);
+      padding: 16px 14px;
+    }
+    .demo-title {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--neural-bright);
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    .demo-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(0, 200, 150, 0.08);
+      font-size: 12px;
+      color: var(--cream-dim);
+    }
+    .demo-row:last-child { border-bottom: none; }
+    .demo-role {
+      color: var(--neural-bright);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 10px;
+    }
+    .demo-login {
+      cursor: pointer;
+      color: var(--cream);
+    }
+
+    @media (max-width: 980px) {
+      body { padding: 16px; }
+      .login-shell { grid-template-columns: 1fr; }
+      .brand-panel { display: none; }
+      .form-panel { padding: 26px 18px; }
+      .form-wrap { width: min(100%, 520px); }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 12px; }
+      .form-panel { padding: 18px 14px; }
+      .field { margin-bottom: 14px; }
+      input { font-size: 16px; }
+      .primary-btn { letter-spacing: 0.05em; }
+      .role-line { gap: 6px; }
+    }
+  </style>
 </head>
 <body>
-
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="orb orb-3"></div>
-
-<svg class="neural-net" viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="ng" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#059669" stop-opacity="0.6"/>
-      <stop offset="100%" stop-color="#059669" stop-opacity="0"/>
-    </radialGradient>
-  </defs>
-  <!-- Nodes -->
-  <circle cx="200" cy="150" r="4" fill="#059669" opacity="0.5"><animate attributeName="opacity" values="0.3;0.8;0.3" dur="3s" repeatCount="indefinite"/></circle>
-  <circle cx="450" cy="80" r="3" fill="#34d399" opacity="0.4"><animate attributeName="opacity" values="0.2;0.7;0.2" dur="4s" repeatCount="indefinite"/></circle>
-  <circle cx="700" cy="200" r="5" fill="#059669" opacity="0.5"><animate attributeName="opacity" values="0.4;0.9;0.4" dur="2.5s" repeatCount="indefinite"/></circle>
-  <circle cx="950" cy="100" r="3" fill="#d97706" opacity="0.4"><animate attributeName="opacity" values="0.3;0.6;0.3" dur="5s" repeatCount="indefinite"/></circle>
-  <circle cx="1200" cy="250" r="4" fill="#059669" opacity="0.5"><animate attributeName="opacity" values="0.2;0.7;0.2" dur="3.5s" repeatCount="indefinite"/></circle>
-  <circle cx="300" cy="400" r="3" fill="#34d399" opacity="0.3"><animate attributeName="opacity" values="0.3;0.6;0.3" dur="4.5s" repeatCount="indefinite"/></circle>
-  <circle cx="600" cy="500" r="4" fill="#059669" opacity="0.4"><animate attributeName="opacity" values="0.2;0.8;0.2" dur="3s" repeatCount="indefinite"/></circle>
-  <circle cx="1100" cy="450" r="3" fill="#d97706" opacity="0.3"><animate attributeName="opacity" values="0.3;0.7;0.3" dur="4s" repeatCount="indefinite"/></circle>
-  <circle cx="150" cy="650" r="4" fill="#059669" opacity="0.4"><animate attributeName="opacity" values="0.2;0.6;0.2" dur="5s" repeatCount="indefinite"/></circle>
-  <circle cx="850" cy="700" r="3" fill="#34d399" opacity="0.3"><animate attributeName="opacity" values="0.3;0.7;0.3" dur="3.5s" repeatCount="indefinite"/></circle>
-  <!-- Connecting lines -->
-  <line x1="200" y1="150" x2="450" y2="80" stroke="#059669" stroke-width="0.5" opacity="0.3"/>
-  <line x1="450" y1="80" x2="700" y2="200" stroke="#059669" stroke-width="0.5" opacity="0.3"/>
-  <line x1="700" y1="200" x2="950" y2="100" stroke="#34d399" stroke-width="0.5" opacity="0.3"/>
-  <line x1="950" y1="100" x2="1200" y2="250" stroke="#059669" stroke-width="0.5" opacity="0.3"/>
-  <line x1="200" y1="150" x2="300" y2="400" stroke="#059669" stroke-width="0.5" opacity="0.2"/>
-  <line x1="700" y1="200" x2="600" y2="500" stroke="#34d399" stroke-width="0.5" opacity="0.2"/>
-  <line x1="1200" y1="250" x2="1100" y2="450" stroke="#059669" stroke-width="0.5" opacity="0.2"/>
-  <line x1="300" y1="400" x2="600" y2="500" stroke="#059669" stroke-width="0.5" opacity="0.2"/>
-  <line x1="600" y1="500" x2="850" y2="700" stroke="#34d399" stroke-width="0.5" opacity="0.2"/>
-  <line x1="150" y1="650" x2="300" y2="400" stroke="#059669" stroke-width="0.5" opacity="0.2"/>
-</svg>
-
-<div class="login-wrap">
-  <!-- Brand Panel -->
-  <div class="brand-panel">
-    <div class="logo-mark">
-      <div class="logo-icon">⬡</div>
-      <div>
-        <div class="logo-text">NEURAL POS</div>
-        <div class="logo-sub">Intelligent Commerce System</div>
+  <div class="login-shell">
+    <aside class="brand-panel">
+      <div class="brand-mark">
+        <div class="brand-icon">⬡</div>
+        <div>
+          <div class="brand-name">Neural POS</div>
+          <div class="brand-sub">Intelligent commerce system</div>
+        </div>
       </div>
-    </div>
 
-    <div class="brand-headline">
-      COMMERCE<br>
-      <span>MADE</span>
-      INTELLIGENT
-    </div>
+      <h1>Commerce <span>Made</span> Intelligent</h1>
+      <p class="brand-text">
+        Neural POS helps you run fast, accurate retail operations with AI-driven insights,
+        smart sales workflows, and complete inventory visibility.
+      </p>
 
-    <p class="brand-desc">
-      Neural POS harnesses the power of Llama AI to transform your retail operations — from intelligent inventory forecasting to real-time sales insights, all in one unified platform.
-    </p>
+      <div class="feature-list">
+        <div class="feature-item"><span class="feature-icon">🧠</span> Llama-powered business intelligence</div>
+        <div class="feature-item"><span class="feature-icon">📦</span> Smart inventory and reorder alerts</div>
+        <div class="feature-item"><span class="feature-icon">📊</span> Real-time sales and analytics</div>
+        <div class="feature-item"><span class="feature-icon">🔐</span> Role-based access control</div>
+      </div>
+    </aside>
 
-    <div class="feature-pills">
-      <div class="pill">
-        <div class="pill-icon">🧠</div>
-        Llama LLM-powered business intelligence
+    <main class="form-panel">
+      <div class="form-wrap">
+        <div class="form-header">
+          <div class="eyebrow">// Access portal</div>
+          <h2 class="form-title">Sign in</h2>
+        </div>
+
+        <form id="loginForm">
+          <div class="field">
+            <label for="username">Username</label>
+            <input id="username" type="text" placeholder="Enter username" autocomplete="username" required>
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" type="password" placeholder="Enter password" autocomplete="current-password" required>
+            <div class="role-line">
+              <span>admin</span>
+              <span>manager</span>
+              <span>cashier</span>
+            </div>
+          </div>
+
+          <button type="submit" class="primary-btn" id="loginButton">Authenticate</button>
+          <div class="status" id="errorBox"></div>
+        </form>
+
+        <div class="demo-box">
+          <div class="demo-title">Demo credentials</div>
+          <div class="demo-row"><span class="demo-role">Admin</span><span class="demo-login" onclick="fillDemo('admin','admin123')">admin / admin123</span></div>
+          <div class="demo-row"><span class="demo-role">Manager</span><span class="demo-login" onclick="fillDemo('manager','manager123')">manager / manager123</span></div>
+          <div class="demo-row"><span class="demo-role">Cashier</span><span class="demo-login" onclick="fillDemo('cashier1','cashier123')">cashier1 / cashier123</span></div>
+        </div>
       </div>
-      <div class="pill">
-        <div class="pill-icon">📦</div>
-        Smart inventory with auto-reorder alerts
-      </div>
-      <div class="pill">
-        <div class="pill-icon">📊</div>
-        Real-time analytics & revenue forecasting
-      </div>
-      <div class="pill">
-        <div class="pill-icon">🔐</div>
-        Role-based access control (Admin / Manager / Cashier)
-      </div>
-      <div class="pill">
-        <div class="pill-icon">🤝</div>
-        Integrated supplier & purchase order management
-      </div>
-    </div>
+    </main>
   </div>
 
-  <!-- Form Panel -->
-  <div class="form-panel">
-    <div class="form-container">
-      <div class="form-header">
-        <div class="form-title">SIGN IN</div>
-        <div class="divider"></div>
-        <div class="form-subtitle">// Access your Neural POS terminal</div>
-      </div>
-
-      <form id="loginForm">
-        <div class="form-group">
-          <label class="form-label">Username</label>
-          <div class="input-wrap">
-            <input type="text" class="form-input" id="username" placeholder="Enter username" autocomplete="username" required>
-            <span class="input-icon">◈</span>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Password</label>
-          <div class="input-wrap">
-            <input type="password" class="form-input" id="password" placeholder="Enter password" autocomplete="current-password" required>
-            <span class="input-icon">🔒</span>
-          </div>
-          <div class="role-hint">
-            <span>Roles available:</span>
-            <span class="role-badge">admin</span>
-            <span class="role-badge">manager</span>
-            <span class="role-badge">cashier</span>
-          </div>
-        </div>
-
-        <button type="submit" class="btn-login" id="loginBtn">
-          <div class="btn-text" id="btnText">
-            <span>⬡</span>
-            <span>AUTHENTICATE</span>
-          </div>
-          <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <span>Authenticating...</span>
-          </div>
-        </button>
-
-        <div class="error-msg" id="errorMsg"></div>
-      </form>
-
-      <!-- Demo Credentials -->
-      <div class="demo-creds">
-        <div class="demo-title">// Demo Credentials</div>
-        <div class="demo-row quick-login" onclick="fillCreds('admin','admin123')">
-          <span class="demo-role">ADMIN</span>
-          <span class="demo-cred">admin / admin123</span>
-        </div>
-        <div class="demo-row quick-login" onclick="fillCreds('manager','manager123')">
-          <span class="demo-role">MANAGER</span>
-          <span class="demo-cred">manager / manager123</span>
-        </div>
-        <div class="demo-row quick-login" onclick="fillCreds('cashier1','cashier123')">
-          <span class="demo-role">CASHIER</span>
-          <span class="demo-cred">cashier1 / cashier123</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-function fillCreds(user, pass) {
-  document.getElementById('username').value = user;
-  document.getElementById('password').value = pass;
-  document.getElementById('username').focus();
-}
-
-document.getElementById('loginForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const username = document.getElementById('username').value.trim();
-  const password = document.getElementById('password').value;
-  const btn = document.getElementById('loginBtn');
-  const btnText = document.getElementById('btnText');
-  const loading = document.getElementById('loading');
-  const errorMsg = document.getElementById('errorMsg');
-
-  btnText.style.display = 'none';
-  loading.style.display = 'flex';
-  btn.disabled = true;
-  errorMsg.style.display = 'none';
-
-  try {
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-      credentials: 'include'
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-      localStorage.setItem('neural_user', JSON.stringify(data.user));
-      localStorage.setItem('neural_token', data.access_token);
-      // Use window.location.origin so it works on any IP, not just localhost
-      window.location.href = window.location.origin + '/dashboard';
-    } else {
-      const err = await res.json();
-      errorMsg.textContent = '⚠ ' + (err.detail || 'Invalid credentials. Please try again.');
-      errorMsg.style.display = 'block';
+  <script>
+    function fillDemo(user, pass) {
+      document.getElementById('username').value = user;
+      document.getElementById('password').value = pass;
     }
-  } catch (err) {
-    errorMsg.textContent = '⚠ Connection error. Is the server running?';
-    errorMsg.style.display = 'block';
-  } finally {
-    btnText.style.display = 'flex';
-    loading.style.display = 'none';
-    btn.disabled = false;
-  }
-});
-</script>
+
+    document.getElementById('loginForm').addEventListener('submit', async function (event) {
+      event.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const button = document.getElementById('loginButton');
+      const errorBox = document.getElementById('errorBox');
+
+      button.disabled = true;
+      button.textContent = 'Authenticating...';
+      errorBox.style.display = 'none';
+
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          const err = await response.json().catch(() => ({ detail: 'Invalid credentials.' }));
+          throw new Error(err.detail || 'Invalid credentials.');
+        }
+
+        const data = await response.json();
+        localStorage.setItem('neural_user', JSON.stringify(data.user));
+        localStorage.setItem('neural_token', data.access_token);
+        window.location.href = window.location.origin + '/dashboard';
+      } catch (error) {
+        errorBox.textContent = '⚠ ' + (error.message || 'Unable to log in right now.');
+        errorBox.style.display = 'block';
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Authenticate';
+      }
+    });
+  </script>
 </body>
 </html>
